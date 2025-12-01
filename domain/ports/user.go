@@ -11,6 +11,6 @@ type UserRepository interface {
 }
 
 type UserService interface {
-	CreateUser(ctx context.Context, user *entities.User) error
-	GetUser(ctx context.Context, id string) (*entities.User, error)
+	CreateUser(ctx context.Context, user *entities.User, file *entities.FileObject) error
+	GetUser(ctx context.Context, id string) (*entities.User, string, error)
 }

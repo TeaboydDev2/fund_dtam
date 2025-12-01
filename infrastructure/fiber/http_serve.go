@@ -7,6 +7,7 @@ import (
 	"fund_dtam/infrastructure/fiber/handler"
 	default_router "fund_dtam/infrastructure/fiber/helper"
 	"fund_dtam/infrastructure/fiber/routes"
+	minio_obj "fund_dtam/infrastructure/minio"
 	mongodb "fund_dtam/infrastructure/mongo"
 	"fund_dtam/infrastructure/mongo/repository"
 	"fund_dtam/service"
@@ -22,7 +23,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func Start(ctx context.Context, cfg config.HTTP, mongo *mongodb.MongoClient) error {
+func Start(
+	ctx context.Context,
+	cfg config.HTTP,
+	mongo *mongodb.MongoClient,
+	minio *minio_obj.MinioClient,
+) error {
 
 	app := fiber.New(fiber.Config{
 		BodyLimit: cfg.BodyLimit * 1024 * 1024,
@@ -38,18 +44,23 @@ func Start(ctx context.Context, cfg config.HTTP, mongo *mongodb.MongoClient) err
 			AllowCredentials: true,
 		},
 	))
+
 	app.Use(limiter.New(limiter.Config{
 		Max:        2000,
 		Expiration: 1 * time.Second,
 	}))
 
+	// wired //
+
+	fileRepository := minio_obj.NewMinioRepository(minio)
+
 	userRepository := repository.NewUserRepository(mongo)
-	userService := service.NewUserService(userRepository)
+	userService := service.NewUserService(userRepository, fileRepository)
 	userHandler := handler.NewUserHandler(userService)
 
 	app.Mount("/users", routes.UserRoutes(userHandler))
 
-	app.Get("/healt-check", default_router.HealthCheck)
+	app.Get("/health-check", default_router.HealthCheck)
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).SendString("Not Found")
 	})

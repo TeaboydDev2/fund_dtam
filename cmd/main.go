@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	cfg "fund_dtam/config"
 	fiber "fund_dtam/infrastructure/fiber"
 	minio_obj "fund_dtam/infrastructure/minio"
@@ -36,9 +35,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("minio: %v\n", minio)
-
-	err = fiber.Start(ctx, *dotenv.HTTP, mongo)
+	err = fiber.Start(ctx, *dotenv.HTTP, mongo, minio)
 	if err != nil {
 		os.Exit(1)
 	}

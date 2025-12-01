@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fund_dtam/domain/ports"
+	fiber_helper "fund_dtam/infrastructure/fiber/helper"
 	"fund_dtam/infrastructure/fiber/model"
 	"time"
 
@@ -23,7 +24,7 @@ func NewUserHandler(
 
 func (us *UserHandler) CreateUser(c *fiber.Ctx) error {
 
-	ctx, cancel := context.WithTimeout(c.Context(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(c.Context(), 1*time.Minute)
 	defer cancel()
 
 	newUser := new(model.CreateUser)
@@ -34,9 +35,17 @@ func (us *UserHandler) CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
+	file, err := fiber_helper.UploadFileHandler(c, "profile_picture")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+
+	}
+
 	user := model.ToEntity(newUser)
 
-	if err := us.userService.CreateUser(ctx, user); err != nil {
+	if err := us.userService.CreateUser(ctx, user, file); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
 		})
@@ -54,7 +63,7 @@ func (us *UserHandler) GetUser(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	user, err := us.userService.GetUser(ctx, id)
+	user, picProfile, err := us.userService.GetUser(ctx, id)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
@@ -62,6 +71,6 @@ func (us *UserHandler) GetUser(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data": model.ToResponse(user),
+		"data": model.ToResponse(user, picProfile),
 	})
 }

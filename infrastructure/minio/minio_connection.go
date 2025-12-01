@@ -4,8 +4,10 @@ import (
 	"context"
 	"fund_dtam/config"
 	"fund_dtam/domain/ports"
-	"io"
 	"log"
+	"mime/multipart"
+	"net/url"
+	"time"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -49,10 +51,12 @@ func NewMinioRepository(minioClient *MinioClient) ports.FileStorageRepository {
 	return minioClient
 }
 
-func (mio *MinioClient) Upload(ctx context.Context, fileName string, reader io.Reader, size int64) error {
+func (mio *MinioClient) Upload(ctx context.Context, filePath, contentType string, reader multipart.File, size int64) error {
 
-	_, err := mio.minioClient.PutObject(ctx, mio.bucketName, fileName, reader, size, minio.PutObjectOptions{
-		PartSize: 64 * 1024 * 1024,
+	_, err := mio.minioClient.PutObject(ctx, mio.bucketName, filePath, reader, size, minio.PutObjectOptions{
+		PartSize:     64 * 1024 * 1024,
+		CacheControl: "public, max-age=604800",
+		ContentType:  contentType,
 	})
 
 	if err != nil {
@@ -60,4 +64,16 @@ func (mio *MinioClient) Upload(ctx context.Context, fileName string, reader io.R
 	}
 
 	return nil
+}
+
+func (mio *MinioClient) PresignObject(ctx context.Context, objectName string) (string, error) {
+
+	reqParams := make(url.Values)
+
+	presignedUrl, err := mio.minioClient.PresignedGetObject(ctx, mio.bucketName, objectName, 10*time.Minute, reqParams)
+	if err != nil {
+		return "", err
+	}
+
+	return presignedUrl.String(), nil
 }

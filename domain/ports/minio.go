@@ -2,9 +2,10 @@ package ports
 
 import (
 	"context"
-	"io"
+	"mime/multipart"
 )
 
 type FileStorageRepository interface {
-	Upload(ctx context.Context, fileName string, reader io.Reader, size int64) error
+	Upload(ctx context.Context, filePath, contentType string, reader multipart.File, size int64) error
+	PresignObject(ctx context.Context, objectName string) (string, error)
 }
