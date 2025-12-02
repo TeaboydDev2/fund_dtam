@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	cfg "fund_dtam/config"
-	fiber "fund_dtam/infrastructure/fiber"
-	minio_obj "fund_dtam/infrastructure/minio"
-	mongodb "fund_dtam/infrastructure/mongo"
+	cfg "dtam-fund-cms-backend/config"
+	fiber "dtam-fund-cms-backend/infrastructure/fiber"
+	minio_obj "dtam-fund-cms-backend/infrastructure/minio"
+	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
 	"log"
 	"os"
 	"time"

@@ -2,9 +2,9 @@ package handler
 
 import (
 	"context"
-	"fund_dtam/domain/ports"
-	fiber_helper "fund_dtam/infrastructure/fiber/helper"
-	"fund_dtam/infrastructure/fiber/model"
+	"dtam-fund-cms-backend/domain/ports"
+	fiber_helper "dtam-fund-cms-backend/infrastructure/fiber/helper"
+	"dtam-fund-cms-backend/infrastructure/fiber/model"
 	"time"
 
 	"github.com/gofiber/fiber/v2"

@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"fund_dtam/domain/entities"
+	"dtam-fund-cms-backend/domain/entities"
 )
 
 type UserRepository interface {

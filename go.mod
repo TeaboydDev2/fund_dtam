@@ -1,5 +1,6 @@
-module fund_dtam
+module dtam-fund-cms-backend
 
+//dtam-fund-cms-backend
 go 1.25.3
 
 require (

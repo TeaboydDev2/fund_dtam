@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fund_dtam/domain/entities"
+	"dtam-fund-cms-backend/domain/entities"
 	"time"
 )
 

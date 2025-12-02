@@ -2,7 +2,7 @@ package mongodb
 
 import (
 	"context"
-	"fund_dtam/config"
+	"dtam-fund-cms-backend/config"
 	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"

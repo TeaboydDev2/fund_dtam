@@ -1,7 +1,7 @@
 package fiber_helper
 
 import (
-	"fund_dtam/domain/entities"
+	"dtam-fund-cms-backend/domain/entities"
 	"path/filepath"
 	"strings"
 

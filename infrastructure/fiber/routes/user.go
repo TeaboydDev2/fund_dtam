@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fund_dtam/infrastructure/fiber/handler"
+	"dtam-fund-cms-backend/infrastructure/fiber/handler"
 
 	"github.com/gofiber/fiber/v2"
 )

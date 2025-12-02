@@ -2,8 +2,8 @@ package minio_obj
 
 import (
 	"context"
-	"fund_dtam/config"
-	"fund_dtam/domain/ports"
+	"dtam-fund-cms-backend/config"
+	"dtam-fund-cms-backend/domain/ports"
 	"log"
 	"mime/multipart"
 	"net/url"

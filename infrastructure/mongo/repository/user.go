@@ -2,10 +2,10 @@ package repository
 
 import (
 	"context"
-	"fund_dtam/domain/entities"
-	"fund_dtam/domain/ports"
-	mongodb "fund_dtam/infrastructure/mongo"
-	"fund_dtam/infrastructure/mongo/model"
+	"dtam-fund-cms-backend/domain/entities"
+	"dtam-fund-cms-backend/domain/ports"
+	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
+	"dtam-fund-cms-backend/infrastructure/mongo/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

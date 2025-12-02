@@ -1,7 +1,7 @@
 package config
 
 import (
-	cfh "fund_dtam/config/helper"
+	cfh "dtam-fund-cms-backend/config/helper"
 
 	"github.com/joho/godotenv"
 )

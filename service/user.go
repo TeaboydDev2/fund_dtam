@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"dtam-fund-cms-backend/domain/entities"
+	"dtam-fund-cms-backend/domain/ports"
 	"fmt"
-	"fund_dtam/domain/entities"
-	"fund_dtam/domain/ports"
 
 	"github.com/google/uuid"
 )
