@@ -32,7 +32,7 @@ func ToResponse(user *entities.User, picProfile string) *UserJson {
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		PictureProfile: FileObject{
-			Name: user.ProfilePicture.Name,
+			Alt:  user.ProfilePicture.Alt,
 			Ext:  user.ProfilePicture.Ext,
 			Path: picProfile,
 		},

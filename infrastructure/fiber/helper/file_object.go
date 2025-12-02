@@ -27,7 +27,7 @@ func UploadFileHandler(c *fiber.Ctx, field string) (*entities.FileObject, error)
 	contentType := fileHeader.Header.Get("Content-Type")
 
 	return &entities.FileObject{
-		Name:        fileName,
+		Alt:         fileName,
 		Ext:         fileExt,
 		Size:        fileSize,
 		ContentType: contentType,

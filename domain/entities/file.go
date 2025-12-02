@@ -4,7 +4,7 @@ import "mime/multipart"
 
 // file value object //
 type FileObject struct {
-	Name        string
+	Alt         string
 	Ext         string
 	Path        string
 	ContentType string

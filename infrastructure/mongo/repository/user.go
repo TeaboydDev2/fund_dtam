@@ -5,10 +5,10 @@ import (
 	"dtam-fund-cms-backend/domain/entities"
 	"dtam-fund-cms-backend/domain/ports"
 	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
+	"dtam-fund-cms-backend/infrastructure/mongo/helper"
 	"dtam-fund-cms-backend/infrastructure/mongo/model"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -40,7 +40,7 @@ func (us *UserRepository) RetriveUser(ctx context.Context, id string) (*entities
 
 	var doc model.UserDB
 
-	obj, err := primitive.ObjectIDFromHex(id)
+	obj, err := helper.ToPrimitiveObj(id)
 	if err != nil {
 		return nil, err
 	}

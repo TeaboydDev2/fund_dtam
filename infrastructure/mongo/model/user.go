@@ -22,7 +22,7 @@ func ToEntity(user *UserDB) *entities.User {
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		ProfilePicture: entities.FileObject{
-			Name: user.ProfilePicture.Name,
+			Alt:  user.ProfilePicture.Alt,
 			Ext:  user.ProfilePicture.Ext,
 			Path: user.ProfilePicture.Path,
 		},
@@ -36,7 +36,7 @@ func ToModel(user *entities.User) (*UserDB, error) {
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		ProfilePicture: FileObjectDB{
-			Name: user.ProfilePicture.Name,
+			Alt:  user.ProfilePicture.Alt,
 			Ext:  user.ProfilePicture.Ext,
 			Path: user.ProfilePicture.Path,
 		},

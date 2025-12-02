@@ -33,7 +33,7 @@ func (us *UserService) CreateUser(ctx context.Context, user *entities.User, file
 	}
 
 	user.ProfilePicture.Ext = file.Ext
-	user.ProfilePicture.Name = file.Name
+	user.ProfilePicture.Alt = file.Alt
 	user.ProfilePicture.Path = filePath
 
 	return us.userRepository.SaveUser(ctx, user)
