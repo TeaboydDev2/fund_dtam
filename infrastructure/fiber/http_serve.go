@@ -53,12 +53,20 @@ func Start(
 	// wired //
 
 	fileRepository := minio_obj.NewMinioRepository(minio)
-
 	userRepository := repository.NewUserRepository(mongo)
+	otherServiceRepository := repository.NewOtherServiceRepository(mongo)
+
 	userService := service.NewUserService(userRepository, fileRepository)
+	otherService := service.NewOtherService(otherServiceRepository, minio)
+	fileService := service.NewFileObjectService(fileRepository)
+
 	userHandler := handler.NewUserHandler(userService)
+	otherServiceHandler := handler.NewOtherServiceHandler(otherService, fileService)
+	fileHandler := handler.NewFileObjectHandler(fileService)
 
 	app.Mount("/users", routes.UserRoutes(userHandler))
+	app.Mount("/other-service", routes.OtherServiceRoutes(otherServiceHandler))
+	app.Mount("/file", routes.FileObjectRoutes(fileHandler))
 
 	app.Get("/health-check", default_router.HealthCheck)
 	app.Use(func(c *fiber.Ctx) error {

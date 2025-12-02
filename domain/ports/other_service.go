@@ -9,16 +9,20 @@ type OtherSeviceRepository interface {
 	SaveService(ctx context.Context, service *entities.OtherSevice) error
 	RetriveService(ctx context.Context, id string) (*entities.OtherSevice, error)
 	RetriveServiceList(ctx context.Context, page, limit int64) ([]*entities.OtherSevice, error)
+	EditService(ctx context.Context, id string, service *entities.OtherSevice) error
 	EditSortNumber(ctx context.Context, service []*entities.OtherSevice) error
-	EditStatus(ctx context.Context, status bool) error
-	DeleteService(ctx context.Context) error
+	EditStatus(ctx context.Context, id string, status bool) error
+	IncreaseViewStatic(ctx context.Context, id string) error
+	DeleteService(ctx context.Context, id string) error
 }
 
 type OtherSevice interface {
-	CreateService(ctx context.Context, user *entities.User, file *entities.FileObject)
+	CreateService(ctx context.Context, service *entities.OtherSevice, file *entities.FileObject) error
 	GetService(ctx context.Context, id string) (*entities.OtherSevice, error)
-	GetServiceList(ctx context.Context) ([]*entities.OtherSevice, error)
+	GetServiceList(ctx context.Context, page, limit string) ([]*entities.OtherSevice, []string, error)
+	EditService(ctx context.Context, id string, service *entities.OtherSevice, file *entities.FileObject) error
 	EditSortNumber(ctx context.Context, service []*entities.OtherSevice) error
-	EditStatus(ctx context.Context, status string) error
-	DeleteService(ctx context.Context) error
+	EditStatus(ctx context.Context, id string, status bool) error
+	IncreaseViewStatic(ctx context.Context, id string) error
+	DeleteService(ctx context.Context, id string) error
 }

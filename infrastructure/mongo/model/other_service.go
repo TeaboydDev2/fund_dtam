@@ -19,6 +19,7 @@ type OtherSeviceDB struct {
 	UpdatedAt  time.Time          `bson:"updated_at"`
 }
 
+// mapper //
 func ToModelService(ots *entities.OtherSevice) *OtherSeviceDB {
 	return &OtherSeviceDB{
 		Thumbnail: FileObjectDB{

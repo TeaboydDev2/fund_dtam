@@ -32,6 +32,7 @@ func main() {
 
 	minio, err := minio_obj.EstablishConnection(ctx, dotenv.Minio)
 	if err != nil {
+		log.Print(err)
 		os.Exit(1)
 	}
 

@@ -53,10 +53,3 @@ func (us *UserService) GetUser(ctx context.Context, id string) (*entities.User, 
 
 	return user, pictureProfile, nil
 }
-
-// func AttachBaseURL(url, BucketName, path string) string {
-
-// 	baseUrl := url + "/" + BucketName + "/" + path
-
-// 	return baseUrl
-// }

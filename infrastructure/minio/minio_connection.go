@@ -4,6 +4,7 @@ import (
 	"context"
 	"dtam-fund-cms-backend/config"
 	"dtam-fund-cms-backend/domain/ports"
+	"io"
 	"log"
 	"mime/multipart"
 	"net/url"
@@ -60,6 +61,25 @@ func (mio *MinioClient) Upload(ctx context.Context, filePath, contentType string
 	})
 
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (mio *MinioClient) Dowload(ctx context.Context, obJectName string) (io.ReadCloser, error) {
+
+	file, err := mio.minioClient.GetObject(ctx, mio.bucketName, obJectName, minio.GetObjectOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
+func (mio *MinioClient) DeleteObject(ctx context.Context, obJectName string) error {
+
+	if err := mio.minioClient.RemoveObject(ctx, mio.bucketName, obJectName, minio.RemoveObjectOptions{}); err != nil {
 		return err
 	}
 
