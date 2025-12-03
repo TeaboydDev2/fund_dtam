@@ -30,13 +30,13 @@ func OtherServiceToEntity(otherService *CreateOtherService) *entities.OtherSevic
 	}
 }
 
-func OtherServiceResponse(otherService *entities.OtherSevice, thumbnailUrl string) *OtherServiceJSON {
+func OtherServiceResponse(otherService *entities.OtherSevice) *OtherServiceJSON {
 	return &OtherServiceJSON{
 		ID: otherService.ID,
 		Thumbnail: FileObject{
 			Alt:  otherService.Thumbnail.Alt,
 			Ext:  otherService.Thumbnail.Ext,
-			Path: thumbnailUrl,
+			Path: otherService.Thumbnail.Path,
 		},
 		Title:      otherService.Title,
 		Url:        otherService.Url,
@@ -48,23 +48,18 @@ func OtherServiceResponse(otherService *entities.OtherSevice, thumbnailUrl strin
 	}
 }
 
-func OtherServiceResponseList(ots []*entities.OtherSevice, thumbnailUrl map[string]string) []*OtherServiceJSON {
+func OtherServiceResponseList(ots []*entities.OtherSevice) []*OtherServiceJSON {
 
 	serviceList := make([]*OtherServiceJSON, len(ots))
 
 	for i, v := range ots {
-
-		thumbnailPath, ok := thumbnailUrl[v.Thumbnail.Path]
-		if !ok {
-			thumbnailPath = v.Thumbnail.Path
-		}
 
 		serviceList[i] = &OtherServiceJSON{
 			ID: v.ID,
 			Thumbnail: FileObject{
 				Alt:  v.Thumbnail.Alt,
 				Ext:  v.Thumbnail.Ext,
-				Path: thumbnailPath,
+				Path: v.Thumbnail.Path,
 			},
 			Title:      v.Title,
 			Url:        v.Url,

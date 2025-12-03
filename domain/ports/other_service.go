@@ -19,7 +19,7 @@ type OtherSeviceRepository interface {
 type OtherSevice interface {
 	CreateService(ctx context.Context, service *entities.OtherSevice, file *entities.FileObject) error
 	GetService(ctx context.Context, id string) (*entities.OtherSevice, error)
-	GetServiceList(ctx context.Context, page, limit string) ([]*entities.OtherSevice, []string, error)
+	GetServiceList(ctx context.Context, page, limit string) ([]*entities.OtherSevice, error)
 	EditService(ctx context.Context, id string, service *entities.OtherSevice, file *entities.FileObject) error
 	EditSortNumber(ctx context.Context, service []*entities.OtherSevice) error
 	EditStatus(ctx context.Context, id string, status bool) error

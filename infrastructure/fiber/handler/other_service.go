@@ -73,14 +73,7 @@ func (ots *OtherServiceHandler) GetOtherService(c *fiber.Ctx) error {
 		})
 	}
 
-	thumbnailUrl, err := ots.fileService.PresignObjectServe(ctx, service.Thumbnail.Path)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
-
-	response := model.OtherServiceResponse(service, thumbnailUrl)
+	response := model.OtherServiceResponse(service)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data":    response,
@@ -97,21 +90,14 @@ func (ots *OtherServiceHandler) GetOtherServiceList(c *fiber.Ctx) error {
 	page := query["page"]
 	limit := query["limit"]
 
-	service, thumbnail, err := ots.otherService.GetServiceList(ctx, page, limit)
+	service, err := ots.otherService.GetServiceList(ctx, page, limit)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	thumbnailUrl, err := ots.fileService.PresignObjectServeList(ctx, thumbnail)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
-
-	response := model.OtherServiceResponseList(service, thumbnailUrl)
+	response := model.OtherServiceResponseList(service)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"data":    response,

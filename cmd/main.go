@@ -36,7 +36,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = fiber.Start(ctx, *dotenv.HTTP, mongo, minio)
+	err = fiber.Start(ctx, *dotenv, mongo, minio)
 	if err != nil {
 		os.Exit(1)
 	}

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"dtam-fund-cms-backend/config"
 	"dtam-fund-cms-backend/domain/entities"
 	"dtam-fund-cms-backend/domain/ports"
 	"dtam-fund-cms-backend/service/helper"
@@ -13,15 +14,18 @@ import (
 type OtherSevice struct {
 	otherServiceRepository ports.OtherSeviceRepository
 	fileStorageRepository  ports.FileStorageRepository
+	cfg                    *config.Minio
 }
 
 func NewOtherService(
 	otherServiceRepository ports.OtherSeviceRepository,
 	fileStorageRepository ports.FileStorageRepository,
+	cfg *config.Minio,
 ) ports.OtherSevice {
 	return &OtherSevice{
 		otherServiceRepository: otherServiceRepository,
 		fileStorageRepository:  fileStorageRepository,
+		cfg:                    cfg,
 	}
 }
 
@@ -55,26 +59,26 @@ func (ots *OtherSevice) GetService(ctx context.Context, id string) (*entities.Ot
 		return nil, err
 	}
 
+	service.Thumbnail.Path = helper.AttachBaseURL(ots.cfg.BaseUrlFile, ots.cfg.BucketName, service.Thumbnail.Path)
+
 	return service, nil
 }
 
-func (ots *OtherSevice) GetServiceList(ctx context.Context, page, limit string) ([]*entities.OtherSevice, []string, error) {
+func (ots *OtherSevice) GetServiceList(ctx context.Context, page, limit string) ([]*entities.OtherSevice, error) {
 
 	parsePage := helper.StrToInt(page, int64(1))
 	parseLimit := helper.StrToInt(limit, int64(6))
 
 	serviceList, err := ots.otherServiceRepository.RetriveServiceList(ctx, parsePage, parseLimit)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	thumbnail := make([]string, 0, len(serviceList))
-
-	for _, s := range serviceList {
-		thumbnail = append(thumbnail, s.Thumbnail.Path)
+	for _, v := range serviceList {
+		v.Thumbnail.Path = helper.AttachBaseURL(ots.cfg.BaseUrlFile, ots.cfg.BucketName, v.Thumbnail.Path)
 	}
 
-	return serviceList, thumbnail, nil
+	return serviceList, nil
 }
 
 func (ots *OtherSevice) EditService(ctx context.Context, id string, service *entities.OtherSevice, file *entities.FileObject) error {

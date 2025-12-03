@@ -2,6 +2,7 @@ package config
 
 import (
 	cfh "dtam-fund-cms-backend/config/helper"
+	"fmt"
 
 	"github.com/joho/godotenv"
 )
@@ -38,6 +39,7 @@ type (
 		SecretAccessKey string
 		Secure          bool
 		BucketName      string
+		BaseUrlFile     string
 	}
 )
 
@@ -72,6 +74,7 @@ func SetUpEnviroment() (*Container, error) {
 		SecretAccessKey: cfh.GetEnv("MINIO_SECRET_ACCESS_KEY", ""),
 		Secure:          cfh.ParseString(cfh.GetEnv("MINIO_SECURE", ""), false),
 		BucketName:      cfh.GetEnv("MINIO_BUCKET_NAME", ""),
+		BaseUrlFile:     fmt.Sprintf("%s:%s", http.Host, http.Port),
 	}
 
 	return &Container{

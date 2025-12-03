@@ -25,20 +25,20 @@ import (
 
 func Start(
 	ctx context.Context,
-	cfg config.HTTP,
+	cfg config.Container,
 	mongo *mongodb.MongoClient,
 	minio *minio_obj.MinioClient,
 ) error {
 
 	app := fiber.New(fiber.Config{
-		BodyLimit: cfg.BodyLimit * 1024 * 1024,
+		BodyLimit: cfg.HTTP.BodyLimit * 1024 * 1024,
 	})
 
 	app.Use(recover.New())
 	app.Use(logger.New())
 	app.Use(cors.New(
 		cors.Config{
-			AllowOrigins:     cfg.AllowedOrigin,
+			AllowOrigins:     cfg.HTTP.AllowedOrigin,
 			AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 			AllowMethods:     "GET,POST,PUT,PATCH,DELETE",
 			AllowCredentials: true,
@@ -57,7 +57,7 @@ func Start(
 	otherServiceRepository := repository.NewOtherServiceRepository(mongo)
 
 	userService := service.NewUserService(userRepository, fileRepository)
-	otherService := service.NewOtherService(otherServiceRepository, minio)
+	otherService := service.NewOtherService(otherServiceRepository, minio, cfg.Minio)
 	fileService := service.NewFileObjectService(fileRepository)
 
 	userHandler := handler.NewUserHandler(userService)
@@ -74,12 +74,12 @@ func Start(
 	})
 
 	go func() {
-		if err := app.Listen(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)); err != nil {
+		if err := app.Listen(fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)); err != nil {
 			log.Printf("Server closed: %v", err)
 		}
 	}()
 
-	log.Printf("Server running on port %s", cfg.Port)
+	log.Printf("Server running on port %s", cfg.HTTP.Port)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
