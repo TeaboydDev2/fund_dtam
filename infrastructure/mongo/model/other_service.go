@@ -39,12 +39,8 @@ func ToModelService(ots *entities.OtherSevice) *OtherSeviceDB {
 
 func ToEntityService(ots *OtherSeviceDB) *entities.OtherSevice {
 	return &entities.OtherSevice{
-		ID: ots.ID.Hex(),
-		Thumbnail: entities.FileObject{
-			Alt:  ots.Thumbnail.Alt,
-			Ext:  ots.Thumbnail.Ext,
-			Path: ots.Thumbnail.Path,
-		},
+		ID:         ots.ID.Hex(),
+		Thumbnail:  FileToEntity(&ots.Thumbnail),
 		Title:      ots.Title,
 		Url:        ots.Url,
 		Number:     ots.Number,
@@ -61,12 +57,8 @@ func ToEntityServiceList(ots []*OtherSeviceDB) []*entities.OtherSevice {
 
 	for i, v := range ots {
 		serviceList[i] = &entities.OtherSevice{
-			ID: v.ID.Hex(),
-			Thumbnail: entities.FileObject{
-				Alt:  v.Thumbnail.Alt,
-				Ext:  v.Thumbnail.Ext,
-				Path: v.Thumbnail.Path,
-			},
+			ID:         v.ID.Hex(),
+			Thumbnail:  FileToEntity(&v.Thumbnail),
 			Title:      v.Title,
 			Url:        v.Url,
 			Number:     v.Number,

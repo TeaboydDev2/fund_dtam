@@ -4,7 +4,7 @@ import "time"
 
 type OtherSevice struct {
 	ID         string
-	Thumbnail  FileObject
+	Thumbnail  *FileObject
 	Title      string
 	Url        string
 	Number     int

@@ -8,7 +8,15 @@ type FileObjectDB struct {
 	Path string `bson:"path"`
 }
 
-func FileToModel(files []*entities.FileObject) []*FileObjectDB {
+func FileToModel(file *entities.FileObject) *FileObjectDB {
+	return &FileObjectDB{
+		Alt:  file.Alt,
+		Ext:  file.Ext,
+		Path: file.Path,
+	}
+}
+
+func FileToModelList(files []*entities.FileObject) []*FileObjectDB {
 
 	file := make([]*FileObjectDB, len(files))
 
@@ -23,7 +31,15 @@ func FileToModel(files []*entities.FileObject) []*FileObjectDB {
 	return file
 }
 
-func FileToEntity(files []*FileObjectDB) []*entities.FileObject {
+func FileToEntity(file *FileObjectDB) *entities.FileObject {
+	return &entities.FileObject{
+		Alt:  file.Alt,
+		Ext:  file.Ext,
+		Path: file.Path,
+	}
+}
+
+func FileListToEntity(files []*FileObjectDB) []*entities.FileObject {
 
 	file := make([]*entities.FileObject, len(files))
 

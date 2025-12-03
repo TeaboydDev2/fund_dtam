@@ -43,7 +43,7 @@ func (ots *OtherSevice) CreateService(ctx context.Context, service *entities.Oth
 		Path: filePath,
 	}
 
-	service.Thumbnail = thumbnail
+	service.Thumbnail = &thumbnail
 
 	if err := ots.otherServiceRepository.SaveService(ctx, service); err != nil {
 		return err
@@ -106,7 +106,7 @@ func (ots *OtherSevice) EditService(ctx context.Context, id string, service *ent
 			Path: filePath,
 		}
 
-		service.Thumbnail = thumbnail
+		service.Thumbnail = &thumbnail
 	} else {
 		service.Thumbnail = oldService.Thumbnail
 	}
