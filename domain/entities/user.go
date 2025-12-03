@@ -7,6 +7,7 @@ type User struct {
 	FirstName      string
 	LastName       string
 	ProfilePicture FileObject
+	Illustration   []*FileObject
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

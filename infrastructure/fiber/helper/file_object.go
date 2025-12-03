@@ -34,3 +34,39 @@ func UploadFileHandler(c *fiber.Ctx, field string) (*entities.FileObject, error)
 		File:        file,
 	}, nil
 }
+
+func UploadMultiFileHandler(c *fiber.Ctx, field string) ([]*entities.FileObject, error) {
+
+	fileHeader, err := c.MultipartForm()
+	if err != nil {
+		return nil, err
+	}
+
+	multiFile := fileHeader.File[field]
+
+	multiFileObject := make([]*entities.FileObject, len(multiFile))
+
+	for k, v := range multiFile {
+
+		file, err := v.Open()
+		if err != nil {
+			return nil, c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+		defer file.Close()
+
+		fileExt := strings.ReplaceAll(strings.ToLower(filepath.Ext(v.Filename)), ".", "")
+		fileName := strings.ReplaceAll(v.Filename, filepath.Ext(v.Filename), "")
+		fileSize := v.Size
+		contentType := v.Header.Get("Content-Type")
+
+		multiFileObject[k] = &entities.FileObject{
+			Alt:         fileName,
+			Ext:         fileExt,
+			Size:        fileSize,
+			ContentType: contentType,
+			File:        file,
+		}
+	}
+
+	return multiFileObject, nil
+}

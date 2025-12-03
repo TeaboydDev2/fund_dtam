@@ -11,12 +11,13 @@ type CreateUser struct {
 }
 
 type UserJson struct {
-	ID             string     `json:"id"`
-	FirstName      string     `json:"first_name"`
-	LastName       string     `json:"last_name"`
-	PictureProfile FileObject `json:"picture_profile"`
-	CreatedAt      time.Time  `json:"created_at"`
-	UpdatedAt      time.Time  `json:"updated_at"`
+	ID             string        `json:"id"`
+	FirstName      string        `json:"first_name"`
+	LastName       string        `json:"last_name"`
+	PictureProfile FileObject    `json:"picture_profile"`
+	Illustration   []*FileObject `json:"illustration"`
+	CreatedAt      time.Time     `json:"created_at"`
+	UpdatedAt      time.Time     `json:"updated_at"`
 }
 
 func ToEntity(user *CreateUser) *entities.User {
@@ -36,7 +37,8 @@ func ToResponse(user *entities.User, picProfile string) *UserJson {
 			Ext:  user.ProfilePicture.Ext,
 			Path: picProfile,
 		},
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		Illustration: FileToResponse(user.Illustration),
+		CreatedAt:    user.CreatedAt,
+		UpdatedAt:    user.UpdatedAt,
 	}
 }

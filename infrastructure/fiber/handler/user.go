@@ -40,12 +40,18 @@ func (us *UserHandler) CreateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
+	}
 
+	multiFile, err := fiber_helper.UploadMultiFileHandler(c, "option_picture")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": err.Error(),
+		})
 	}
 
 	user := model.ToEntity(newUser)
 
-	if err := us.userService.CreateUser(ctx, user, file); err != nil {
+	if err := us.userService.CreateUser(ctx, user, file, multiFile); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
 		})
