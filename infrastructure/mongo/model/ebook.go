@@ -45,3 +45,24 @@ func EBookToEntity(ebook *EBookDB) *entities.Ebook {
 		UpdatedAt:  ebook.UpdatedAt,
 	}
 }
+
+func EBookToEntityList(ebooks []*EBookDB) []*entities.Ebook {
+
+	ebooksList := make([]*entities.Ebook, len(ebooks))
+
+	for i, v := range ebooks {
+		ebooksList[i] = &entities.Ebook{
+			ID:         v.ID.Hex(),
+			Thumbnail:  FileToEntity(v.Thumbnail),
+			EBookFile:  FileToEntity(v.EBookFile),
+			Title:      v.Title,
+			Number:     v.Number,
+			Status:     v.Status,
+			ViewStatic: v.ViewStatic,
+			CreatedAt:  v.CreatedAt,
+			UpdatedAt:  v.UpdatedAt,
+		}
+	}
+
+	return ebooksList
+}
