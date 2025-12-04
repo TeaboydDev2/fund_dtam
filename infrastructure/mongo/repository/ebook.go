@@ -7,6 +7,7 @@ import (
 	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
 	"dtam-fund-cms-backend/infrastructure/mongo/helper"
 	"dtam-fund-cms-backend/infrastructure/mongo/model"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,6 +32,7 @@ func (eb *EBookRepository) SaveEBook(ctx context.Context, ebook *entities.Ebook)
 
 	return nil
 }
+
 func (eb *EBookRepository) RetriveEBook(ctx context.Context, id string) (*entities.Ebook, error) {
 
 	doc := new(model.EBookDB)
@@ -86,8 +88,49 @@ func (eb *EBookRepository) RetriveEBookList(ctx context.Context, page, limit int
 }
 
 func (eb *EBookRepository) EditEBook(ctx context.Context, id string, ebook *entities.Ebook) error {
+
+	obj, err := helper.ToPrimitiveObj(id)
+	if err != nil {
+		return err
+	}
+
+	edit := bson.M{
+		"$set": bson.M{
+			"thumbnail": bson.M{
+				"alt":  ebook.Thumbnail.Alt,
+				"ext":  ebook.Thumbnail.Ext,
+				"path": ebook.Thumbnail.Path,
+			},
+			"ebook_file": bson.M{
+				"alt":  ebook.EBookFile.Alt,
+				"ext":  ebook.EBookFile.Ext,
+				"path": ebook.EBookFile.Path,
+			},
+			"title":      ebook.Title,
+			"status":     ebook.Status,
+			"updated_at": time.Now,
+		},
+	}
+
+	if _, err := eb.collection.UpdateByID(ctx, obj, edit); err != nil {
+		return err
+	}
+
 	return nil
 }
+
 func (eb *EBookRepository) DeleteEBook(ctx context.Context, id string) error {
+
+	obj, err := helper.ToPrimitiveObj(id)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.M{"_id": obj}
+
+	if _, err := eb.collection.DeleteOne(ctx, filter); err != nil {
+		return err
+	}
+
 	return nil
 }

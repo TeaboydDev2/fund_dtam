@@ -67,7 +67,6 @@ func ToEntityServiceList(ots []*OtherSeviceDB) []*entities.OtherSevice {
 			CreatedAt:  v.CreatedAt,
 			UpdatedAt:  v.UpdatedAt,
 		}
-
 	}
 
 	return serviceList
