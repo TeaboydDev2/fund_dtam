@@ -55,18 +55,22 @@ func Start(
 	fileRepository := minio_obj.NewMinioRepository(minio)
 	userRepository := repository.NewUserRepository(mongo)
 	otherServiceRepository := repository.NewOtherServiceRepository(mongo)
+	statViewRepository := repository.NewStatViewRepository(mongo)
 
 	userService := service.NewUserService(userRepository, fileRepository)
 	otherService := service.NewOtherService(otherServiceRepository, minio, cfg.Minio)
 	fileService := service.NewFileObjectService(fileRepository)
+	statViewService := service.NewStatViewServiceService(statViewRepository)
 
 	userHandler := handler.NewUserHandler(userService)
 	otherServiceHandler := handler.NewOtherServiceHandler(otherService, fileService)
 	fileHandler := handler.NewFileObjectHandler(fileService)
+	statViewHandler := handler.NewStatViewHandler(statViewService)
 
 	app.Mount("/users", routes.UserRoutes(userHandler))
 	app.Mount("/other-service", routes.OtherServiceRoutes(otherServiceHandler))
 	app.Mount("/file", routes.FileObjectRoutes(fileHandler))
+	app.Mount("/stat", routes.StatViewRoutes(statViewHandler))
 
 	app.Get("/health-check", default_router.HealthCheck)
 	app.Use(func(c *fiber.Ctx) error {
