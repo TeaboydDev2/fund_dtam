@@ -3,25 +3,24 @@ package model
 import (
 	"dtam-fund-cms-backend/domain/entities"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type OtherSeviceDB struct {
-	ID         primitive.ObjectID `bson:"_id,omitempty"`
-	Thumbnail  FileObjectDB       `bson:"thumbnail"`
-	Title      string             `bson:"title"`
-	Url        string             `bson:"url"`
-	Number     int                `bson:"number"`
-	Status     bool               `bson:"status"`
-	ViewStatic int64              `bson:"view_static"`
-	CreatedAt  time.Time          `bson:"created_at"`
-	UpdatedAt  time.Time          `bson:"updated_at"`
+	ID         string       `bson:"_id,omitempty"`
+	Thumbnail  FileObjectDB `bson:"thumbnail"`
+	Title      string       `bson:"title"`
+	Url        string       `bson:"url"`
+	Number     int          `bson:"number"`
+	Status     bool         `bson:"status"`
+	ViewStatic int64        `bson:"view_static"`
+	CreatedAt  time.Time    `bson:"created_at"`
+	UpdatedAt  time.Time    `bson:"updated_at"`
 }
 
 // mapper //
 func ToModelService(ots *entities.OtherSevice) *OtherSeviceDB {
 	return &OtherSeviceDB{
+		ID: ots.ID,
 		Thumbnail: FileObjectDB{
 			Alt:  ots.Thumbnail.Alt,
 			Ext:  ots.Thumbnail.Ext,
@@ -39,7 +38,7 @@ func ToModelService(ots *entities.OtherSevice) *OtherSeviceDB {
 
 func ToEntityService(ots *OtherSeviceDB) *entities.OtherSevice {
 	return &entities.OtherSevice{
-		ID:         ots.ID.Hex(),
+		ID:         ots.ID,
 		Thumbnail:  FileToEntity(&ots.Thumbnail),
 		Title:      ots.Title,
 		Url:        ots.Url,
@@ -57,7 +56,7 @@ func ToEntityServiceList(ots []*OtherSeviceDB) []*entities.OtherSevice {
 
 	for i, v := range ots {
 		serviceList[i] = &entities.OtherSevice{
-			ID:         v.ID.Hex(),
+			ID:         v.ID,
 			Thumbnail:  FileToEntity(&v.Thumbnail),
 			Title:      v.Title,
 			Url:        v.Url,

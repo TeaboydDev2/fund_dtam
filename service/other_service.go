@@ -44,6 +44,7 @@ func (ots *OtherSevice) CreateService(ctx context.Context, service *entities.Oth
 	}
 
 	service.Thumbnail = &thumbnail
+	service.ID = uuid.NewString()
 
 	if err := ots.otherServiceRepository.SaveService(ctx, service); err != nil {
 		return err
