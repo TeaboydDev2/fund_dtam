@@ -68,13 +68,22 @@ func SetUpEnviroment() (*Container, error) {
 		DatabaseName: cfh.GetEnv("DB_NAME", ""),
 	}
 
+	ssl := ""
+
+	switch app.Stage {
+	case "development":
+		ssl = "http"
+	case "production":
+		ssl = "https"
+	}
+
 	minio := &Minio{
 		Host:            cfh.GetEnv("MINIO_HOST", ""),
 		AccessKey:       cfh.GetEnv("MINIO_ACCESS_KEY", ""),
 		SecretAccessKey: cfh.GetEnv("MINIO_SECRET_ACCESS_KEY", ""),
 		Secure:          cfh.ParseString(cfh.GetEnv("MINIO_SECURE", ""), false),
 		BucketName:      cfh.GetEnv("MINIO_BUCKET_NAME", ""),
-		BaseUrlFile:     fmt.Sprintf("%s:%s", http.Host, http.Port),
+		BaseUrlFile:     fmt.Sprintf("%s://%s:%s", ssl, http.Host, http.Port),
 	}
 
 	return &Container{

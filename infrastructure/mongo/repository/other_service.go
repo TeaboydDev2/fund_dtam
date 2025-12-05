@@ -5,8 +5,6 @@ import (
 	"dtam-fund-cms-backend/domain/entities"
 	"dtam-fund-cms-backend/domain/ports"
 	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
-	"dtam-fund-cms-backend/infrastructure/mongo/helper"
-	"dtam-fund-cms-backend/infrastructure/mongo/model"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,32 +26,27 @@ func NewOtherServiceRepository(
 
 func (ots *OtherSeviceRepository) SaveService(ctx context.Context, service *entities.OtherSevice) error {
 
-	if _, err := ots.collection.InsertOne(ctx, model.ToModelService(service)); err != nil {
+	if _, err := ots.collection.InsertOne(ctx, service); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (ots *OtherSeviceRepository) RetriveService(ctx context.Context, id string) (*entities.OtherSevice, error) {
+func (ots *OtherSeviceRepository) RetriveService(ctx context.Context, id string) (res *entities.OtherSevice, err error) {
 
-	var doc model.OtherSeviceDB
+	filter := bson.M{"_id": id}
 
-	obj, err := helper.ToPrimitiveObj(id)
-	if err != nil {
-		return nil, err
+	if err = ots.collection.FindOne(ctx, filter).Decode(&res); err != nil {
+		return
 	}
 
-	filter := bson.M{"_id": obj}
-
-	if err := ots.collection.FindOne(ctx, filter).Decode(&doc); err != nil {
-		return nil, err
-	}
-
-	return model.ToEntityService(&doc), nil
+	return
 }
 
 func (ots *OtherSeviceRepository) RetriveServiceList(ctx context.Context, page, limit int64) ([]*entities.OtherSevice, error) {
+
+	res := make([]*entities.OtherSevice, 0, limit)
 
 	skip := (page - 1) * limit
 
@@ -69,22 +62,14 @@ func (ots *OtherSeviceRepository) RetriveServiceList(ctx context.Context, page, 
 	}
 	defer cursor.Close(ctx)
 
-	var docs []*model.OtherSeviceDB
-	if err := cursor.All(ctx, &docs); err != nil {
+	if err = cursor.All(ctx, &res); err != nil {
 		return nil, err
 	}
 
-	result := model.ToEntityServiceList(docs)
-
-	return result, nil
+	return res, nil
 }
 
-func (ots *OtherSeviceRepository) EditService(ctx context.Context, id string, service *entities.OtherSevice) error {
-
-	obj, err := helper.ToPrimitiveObj(id)
-	if err != nil {
-		return err
-	}
+func (ots *OtherSeviceRepository) EditService(ctx context.Context, id string, service *entities.OtherSevice) (err error) {
 
 	update := bson.M{
 		"$set": bson.M{
@@ -100,28 +85,23 @@ func (ots *OtherSeviceRepository) EditService(ctx context.Context, id string, se
 		},
 	}
 
-	result, err := ots.collection.UpdateByID(ctx, obj, update)
+	result, err := ots.collection.UpdateByID(ctx, id, update)
 	if err != nil {
-		return err
+		return
 	}
 
 	if result.MatchedCount == 0 {
-		return err
+		return
 	}
 
-	return nil
+	return
 }
 
-func (ots *OtherSeviceRepository) EditSortNumber(ctx context.Context, service []*entities.OtherSevice) error {
-	return nil
+func (ots *OtherSeviceRepository) EditSortNumber(ctx context.Context, service []*entities.OtherSevice) (err error) {
+	return
 }
 
-func (ots *OtherSeviceRepository) EditStatus(ctx context.Context, id string, status bool) error {
-
-	obj, err := helper.ToPrimitiveObj(id)
-	if err != nil {
-		return err
-	}
+func (ots *OtherSeviceRepository) EditStatus(ctx context.Context, id string, status bool) (err error) {
 
 	update := bson.M{
 		"$set": bson.M{
@@ -129,47 +109,37 @@ func (ots *OtherSeviceRepository) EditStatus(ctx context.Context, id string, sta
 		},
 	}
 
-	result, err := ots.collection.UpdateByID(ctx, obj, update)
+	result, err := ots.collection.UpdateByID(ctx, id, update)
 	if err != nil {
-		return err
+		return
 	}
 
 	if result.MatchedCount == 0 {
-		return err
+		return
 	}
 
-	return nil
+	return
 }
 
-func (ots *OtherSeviceRepository) IncreaseViewStatic(ctx context.Context, id string) error {
+func (ots *OtherSeviceRepository) IncreaseViewStatic(ctx context.Context, id string) (err error) {
 
-	obj, err := helper.ToPrimitiveObj(id)
-	if err != nil {
-		return err
-	}
-
-	filter := bson.M{"_id": obj}
+	filter := bson.M{"_id": id}
 	inc := bson.M{"$inc": bson.M{"view_static": 1}}
 
-	if _, err := ots.collection.UpdateOne(ctx, filter, inc); err != nil {
-		return err
+	if _, err = ots.collection.UpdateOne(ctx, filter, inc); err != nil {
+		return
 	}
 
-	return nil
+	return
 }
 
-func (ots *OtherSeviceRepository) DeleteService(ctx context.Context, id string) error {
+func (ots *OtherSeviceRepository) DeleteService(ctx context.Context, id string) (err error) {
 
-	obj, err := helper.ToPrimitiveObj(id)
-	if err != nil {
-		return err
+	filter := bson.M{"_id": id}
+
+	if _, err = ots.collection.DeleteOne(ctx, filter); err != nil {
+		return
 	}
 
-	filter := bson.M{"_id": obj}
-
-	if _, err := ots.collection.DeleteOne(ctx, filter); err != nil {
-		return err
-	}
-
-	return nil
+	return
 }

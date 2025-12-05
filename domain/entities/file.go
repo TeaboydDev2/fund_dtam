@@ -4,10 +4,10 @@ import "mime/multipart"
 
 // file value object //
 type FileObject struct {
-	Alt         string
-	Ext         string
-	Path        string
-	ContentType string
-	Size        int64
-	File        multipart.File
+	Alt         string         `json:"alt" bson:"alt"`
+	Ext         string         `json:"ext" bson:"ext"`
+	Path        string         `json:"path" bson:"path"`
+	ContentType string         `json:"-" bson:"-"`
+	Size        int64          `json:"-" bson:"-"`
+	File        multipart.File `json:"-" bson:"-"`
 }
