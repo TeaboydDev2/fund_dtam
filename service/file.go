@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"dtam-fund-cms-backend/domain/entities"
 	"dtam-fund-cms-backend/domain/ports"
 	"io"
 )
@@ -40,4 +41,12 @@ func (mio *FileObjectSevice) PresignObjectServeList(ctx context.Context, objectN
 	}
 
 	return urlList, nil
+}
+
+func cloneFile(src *entities.FileObject, path string) *entities.FileObject {
+
+	n := *src
+	n.Path = path
+
+	return &n
 }

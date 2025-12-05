@@ -53,20 +53,25 @@ func Start(
 	// wired //
 
 	fileRepository := minio_obj.NewMinioRepository(minio)
-	userRepository := repository.NewUserRepository(mongo)
 	otherServiceRepository := repository.NewOtherServiceRepository(mongo)
+	statViewRepository := repository.NewStatViewRepository(mongo)
+	ebookRepository := repository.NewEBookRepository(mongo)
 
-	userService := service.NewUserService(userRepository, fileRepository)
-	otherService := service.NewOtherService(otherServiceRepository, minio, cfg.Minio)
+	otherService := service.NewOtherService(otherServiceRepository, fileRepository, cfg.Minio)
 	fileService := service.NewFileObjectService(fileRepository)
+	statViewService := service.NewStatViewServiceService(statViewRepository)
+	ebookService := service.NewEBookService(ebookRepository, fileRepository, cfg.Minio)
 
-	userHandler := handler.NewUserHandler(userService)
 	otherServiceHandler := handler.NewOtherServiceHandler(otherService, fileService)
 	fileHandler := handler.NewFileObjectHandler(fileService)
+	statViewHandler := handler.NewStatViewHandler(statViewService)
+	ebookHandler := handler.NewEBookHandler(ebookService)
 
-	app.Mount("/users", routes.UserRoutes(userHandler))
-	app.Mount("/other-service", routes.OtherServiceRoutes(otherServiceHandler))
-	app.Mount("/file", routes.FileObjectRoutes(fileHandler))
+	dtam := app.Group(fmt.Sprintf("/dtam-fund/%s", cfg.HTTP.Prefix))
+	dtam.Mount("/other-service", routes.OtherServiceRoutes(otherServiceHandler))
+	dtam.Mount("/file", routes.FileObjectRoutes(fileHandler))
+	dtam.Mount("/stat", routes.StatViewRoutes(statViewHandler))
+	dtam.Mount("/ebook", routes.EBookRoutes(ebookHandler))
 
 	app.Get("/health-check", default_router.HealthCheck)
 	app.Use(func(c *fiber.Ctx) error {

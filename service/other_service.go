@@ -29,24 +29,26 @@ func NewOtherService(
 	}
 }
 
-func (ots *OtherSevice) CreateService(ctx context.Context, service *entities.OtherSevice, file *entities.FileObject) error {
+func (ots *OtherSevice) CreateService(ctx context.Context, service *entities.OtherSevice, file *entities.FileObject) (err error) {
+
+	if file == nil {
+		return fmt.Errorf("thumbnail is required")
+	}
 
 	filePath := fmt.Sprintf("service_thumbnail/%s", uuid.New().String())
 
-	if err := ots.fileStorageRepository.Upload(ctx, filePath, file.ContentType, file.File, file.Size); err != nil {
-		return err
+	if err = ots.fileStorageRepository.Upload(ctx, filePath, file.ContentType, file.File, file.Size); err != nil {
+		return
 	}
 
-	thumbnail := entities.FileObject{
-		Alt:  file.Alt,
-		Ext:  file.Ext,
-		Path: filePath,
-	}
+	service.Thumbnail = cloneFile(file, filePath)
+	service.ID = uuid.NewString()
 
-	service.Thumbnail = &thumbnail
+	if err = ots.otherServiceRepository.SaveService(ctx, service); err != nil {
 
-	if err := ots.otherServiceRepository.SaveService(ctx, service); err != nil {
-		return err
+		_ = ots.fileStorageRepository.DeleteObject(ctx, filePath)
+
+		return fmt.Errorf("failed to save service: %w", err)
 	}
 
 	return nil
@@ -100,13 +102,7 @@ func (ots *OtherSevice) EditService(ctx context.Context, id string, service *ent
 			return err
 		}
 
-		thumbnail := entities.FileObject{
-			Alt:  file.Alt,
-			Ext:  file.Ext,
-			Path: filePath,
-		}
-
-		service.Thumbnail = &thumbnail
+		service.Thumbnail = cloneFile(file, filePath)
 	} else {
 		service.Thumbnail = oldService.Thumbnail
 	}

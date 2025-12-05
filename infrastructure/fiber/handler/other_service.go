@@ -73,10 +73,8 @@ func (ots *OtherServiceHandler) GetOtherService(c *fiber.Ctx) error {
 		})
 	}
 
-	response := model.OtherServiceResponse(service)
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    response,
+		"data":    service,
 		"message": "service fetch successfully",
 	})
 }
@@ -97,10 +95,8 @@ func (ots *OtherServiceHandler) GetOtherServiceList(c *fiber.Ctx) error {
 		})
 	}
 
-	response := model.OtherServiceResponseList(service)
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    response,
+		"data":    service,
 		"message": "service fetch successfully",
 	})
 }

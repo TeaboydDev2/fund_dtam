@@ -1,15 +1,17 @@
 package entities
 
-import "time"
+import (
+	"time"
+)
 
 type OtherSevice struct {
-	ID         string
-	Thumbnail  *FileObject
-	Title      string
-	Url        string
-	Number     int
-	Status     bool
-	ViewStatic int64
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID         string      `json:"id" bson:"_id"`
+	Thumbnail  *FileObject `json:"thumbnail" bson:"thumbnail"`
+	Title      string      `json:"title" bson:"title"`
+	Url        string      `json:"url" bson:"url"`
+	Number     int         `json:"number" bson:"number"`
+	Status     bool        `json:"status" bson:"status"`
+	ViewStatic int64       `json:"view_static" bson:"view_static"`
+	CreatedAt  time.Time   `json:"created_at" bson:"created_at"`
+	UpdatedAt  time.Time   `json:"updated_at" bson:"updated_at"`
 }
