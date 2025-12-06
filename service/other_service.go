@@ -61,7 +61,7 @@ func (ots *OtherSevice) GetService(ctx context.Context, id string) (*entities.Ot
 		return nil, err
 	}
 
-	service.Thumbnail.Path = helper.AttachBaseURL(ots.cfg.BaseUrlFile, ots.cfg.BucketName, service.Thumbnail.Path)
+	helper.AttachBaseURL(ots.cfg.BaseUrlFile, ots.cfg.BucketName, &service.Thumbnail.Path)
 
 	return service, nil
 }
@@ -76,8 +76,8 @@ func (ots *OtherSevice) GetServiceList(ctx context.Context, page, limit string) 
 		return nil, err
 	}
 
-	for _, v := range serviceList {
-		v.Thumbnail.Path = helper.AttachBaseURL(ots.cfg.BaseUrlFile, ots.cfg.BucketName, v.Thumbnail.Path)
+	for i := range serviceList {
+		helper.AttachBaseURL(ots.cfg.BaseUrlFile, ots.cfg.BucketName, &serviceList[i].Thumbnail.Path)
 	}
 
 	return serviceList, nil

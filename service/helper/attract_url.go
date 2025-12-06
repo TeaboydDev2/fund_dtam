@@ -1,8 +1,5 @@
 package helper
 
-func AttachBaseURL(url, BucketName, path string) string {
-
-	baseUrl := url + "/" + BucketName + "/" + path
-
-	return baseUrl
+func AttachBaseURL(url, BucketName string, path *string) {
+	*path = url + "/" + BucketName + "/" + *path
 }

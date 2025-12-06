@@ -73,7 +73,7 @@ func (eb *EBookService) GetEBook(ctx context.Context, id string) (res *entities.
 		return
 	}
 
-	ebook.Thumbnail.Path = helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, ebook.Thumbnail.Path)
+	helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, &ebook.Thumbnail.Path)
 
 	res = ebook
 
@@ -90,11 +90,9 @@ func (eb *EBookService) GetEBookList(ctx context.Context, page, limit string) (r
 		return
 	}
 
-	base := helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, "")
-
-	for _, v := range ebookList {
-		v.Thumbnail.Path = base + v.Thumbnail.Path
-		v.EBookFile.Path = base + v.EBookFile.Path
+	for i := range ebookList {
+		helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, &ebookList[i].Thumbnail.Path)
+		helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, &ebookList[i].EBookFile.Path)
 	}
 
 	res = ebookList
