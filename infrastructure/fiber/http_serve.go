@@ -58,7 +58,7 @@ func Start(
 	statViewRepository := repository.NewStatViewRepository(mongo)
 	ebookRepository := repository.NewEBookRepository(mongo)
 
-	otherService := service.NewOtherService(otherServiceRepository, fileRepository, cfg.Minio)
+	otherService := service.NewOtherService(otherServiceRepository, fileRepository, cfg.Minio, logger)
 	fileService := service.NewFileObjectService(fileRepository)
 	statViewService := service.NewStatViewServiceService(statViewRepository)
 	ebookService := service.NewEBookService(ebookRepository, fileRepository, cfg.Minio)

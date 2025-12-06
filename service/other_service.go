@@ -15,17 +15,20 @@ type OtherSevice struct {
 	otherServiceRepository ports.OtherSeviceRepository
 	fileStorageRepository  ports.FileStorageRepository
 	cfg                    *config.Minio
+	logger                 ports.Logger
 }
 
 func NewOtherService(
 	otherServiceRepository ports.OtherSeviceRepository,
 	fileStorageRepository ports.FileStorageRepository,
 	cfg *config.Minio,
+	logger ports.Logger,
 ) ports.OtherSevice {
 	return &OtherSevice{
 		otherServiceRepository: otherServiceRepository,
 		fileStorageRepository:  fileStorageRepository,
 		cfg:                    cfg,
+		logger:                 logger,
 	}
 }
 
