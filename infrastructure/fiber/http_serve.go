@@ -6,6 +6,7 @@ import (
 	"dtam-fund-cms-backend/infrastructure/fiber/handler"
 	default_router "dtam-fund-cms-backend/infrastructure/fiber/helper"
 	"dtam-fund-cms-backend/infrastructure/fiber/routes"
+	"dtam-fund-cms-backend/infrastructure/logger"
 	minio_obj "dtam-fund-cms-backend/infrastructure/minio"
 	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
 	"dtam-fund-cms-backend/infrastructure/mongo/repository"
@@ -19,13 +20,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 func Start(
 	ctx context.Context,
 	cfg config.Container,
+	logger *logger.ZeroLogger,
 	mongo *mongodb.MongoClient,
 	minio *minio_obj.MinioClient,
 ) error {
@@ -35,7 +36,7 @@ func Start(
 	})
 
 	app.Use(recover.New())
-	app.Use(logger.New())
+	app.Use(logger.APILogger())
 	app.Use(cors.New(
 		cors.Config{
 			AllowOrigins:     cfg.HTTP.AllowedOrigin,
@@ -62,7 +63,7 @@ func Start(
 	statViewService := service.NewStatViewServiceService(statViewRepository)
 	ebookService := service.NewEBookService(ebookRepository, fileRepository, cfg.Minio)
 
-	otherServiceHandler := handler.NewOtherServiceHandler(otherService, fileService)
+	otherServiceHandler := handler.NewOtherServiceHandler(logger, otherService, fileService)
 	fileHandler := handler.NewFileObjectHandler(fileService)
 	statViewHandler := handler.NewStatViewHandler(statViewService)
 	ebookHandler := handler.NewEBookHandler(ebookService)

@@ -11,15 +11,18 @@ import (
 )
 
 type OtherServiceHandler struct {
+	logger       ports.Logger
 	otherService ports.OtherSevice
 	fileService  ports.FileStorageService
 }
 
 func NewOtherServiceHandler(
+	logger ports.Logger,
 	otherService ports.OtherSevice,
 	fileService ports.FileStorageService,
 ) *OtherServiceHandler {
 	return &OtherServiceHandler{
+		logger:       logger,
 		otherService: otherService,
 		fileService:  fileService,
 	}
@@ -33,6 +36,11 @@ func (ots *OtherServiceHandler) CreateOtherService(c *fiber.Ctx) error {
 	otherService := new(model.CreateOtherService)
 
 	if err := c.BodyParser(otherService); err != nil {
+		ots.logger.ErrorF("cannot parse body", err, map[string]interface{}{
+			"path":   c.Path(),
+			"method": c.Method(),
+			"body":   string(c.Body()),
+		})
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
@@ -40,6 +48,10 @@ func (ots *OtherServiceHandler) CreateOtherService(c *fiber.Ctx) error {
 
 	file, err := fiberHelper.UploadFileHandler(c, "other_service_thumbnail")
 	if err != nil {
+		ots.logger.Warn("file upload failed", map[string]interface{}{
+			"field": "other_service_thumbnail",
+			"err":   err.Error(),
+		})
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
@@ -53,6 +65,12 @@ func (ots *OtherServiceHandler) CreateOtherService(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
+
+	ots.logger.Info("other service created successfully", map[string]interface{}{
+		"name":   otherService.Title,
+		"method": c.Method(),
+		"path":   c.Path(),
+	})
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "service create successfully",

@@ -4,6 +4,7 @@ import (
 	"context"
 	cfg "dtam-fund-cms-backend/config"
 	fiber "dtam-fund-cms-backend/infrastructure/fiber"
+	"dtam-fund-cms-backend/infrastructure/logger"
 	minio_obj "dtam-fund-cms-backend/infrastructure/minio"
 	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
 	"log"
@@ -24,6 +25,8 @@ func main() {
 
 	log.Println("ENV has been loaded")
 
+	logger := logger.EstablishZeroLogger(*dotenv.App)
+
 	mongo, err := mongodb.EstablishConnection(ctx, dotenv.Mongo)
 	if err != nil {
 		os.Exit(1)
@@ -36,7 +39,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = fiber.Start(ctx, *dotenv, mongo, minio)
+	err = fiber.Start(ctx, *dotenv, logger, mongo, minio)
 	if err != nil {
 		os.Exit(1)
 	}
