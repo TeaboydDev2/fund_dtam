@@ -16,7 +16,8 @@ type (
 	}
 
 	App struct {
-		Stage string
+		Stage    string
+		LogLevel string
 	}
 
 	HTTP struct {
@@ -51,7 +52,8 @@ func SetUpEnviroment() (*Container, error) {
 	}
 
 	app := &App{
-		Stage: cfh.GetEnv("APP_STAGE", "development"),
+		Stage:    cfh.GetEnv("APP_STAGE", "development"),
+		LogLevel: cfh.GetEnv("LOG_LEVEL", "debug"),
 	}
 
 	http := &HTTP{

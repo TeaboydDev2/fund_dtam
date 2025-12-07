@@ -73,7 +73,7 @@ func (eb *EBookService) GetEBook(ctx context.Context, id string) (res *entities.
 		return
 	}
 
-	ebook.Thumbnail.Path = helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, ebook.Thumbnail.Path)
+	helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, &ebook.Thumbnail.Path)
 
 	res = ebook
 
@@ -90,11 +90,9 @@ func (eb *EBookService) GetEBookList(ctx context.Context, page, limit string) (r
 		return
 	}
 
-	base := helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, "")
-
-	for _, v := range ebookList {
-		v.Thumbnail.Path = base + v.Thumbnail.Path
-		v.EBookFile.Path = base + v.EBookFile.Path
+	for i := range ebookList {
+		helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, &ebookList[i].Thumbnail.Path)
+		helper.AttachBaseURL(eb.cfg.BaseUrlFile, eb.cfg.BucketName, &ebookList[i].EBookFile.Path)
 	}
 
 	res = ebookList
@@ -115,6 +113,11 @@ func (eb *EBookService) EditEBook(ctx context.Context, id string, ebook *entitie
 		if err = eb.fileStorageRepository.Upload(ctx, thumbnailPath, thumbnail.ContentType, thumbnail.File, thumbnail.Size); err != nil {
 			return
 		}
+
+		if err = eb.fileStorageRepository.DeleteObject(ctx, oldEbook.Thumbnail.Path); err != nil {
+			return
+		}
+
 		oldEbook.Thumbnail = cloneFile(thumbnail, thumbnailPath)
 	}
 
@@ -122,6 +125,11 @@ func (eb *EBookService) EditEBook(ctx context.Context, id string, ebook *entitie
 		if err = eb.fileStorageRepository.Upload(ctx, filePath, file.ContentType, file.File, file.Size); err != nil {
 			return
 		}
+
+		if err = eb.fileStorageRepository.DeleteObject(ctx, oldEbook.EBookFile.Path); err != nil {
+			return
+		}
+
 		oldEbook.EBookFile = cloneFile(file, filePath)
 	}
 
