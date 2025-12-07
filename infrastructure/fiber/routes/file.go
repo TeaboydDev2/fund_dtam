@@ -12,6 +12,7 @@ func FileObjectRoutes(
 
 	app := fiber.New()
 
+	app.Post("/", fileObjectHandler.UploadPlaygroud)
 	app.Get("/", fileObjectHandler.Dowload)
 
 	return app
