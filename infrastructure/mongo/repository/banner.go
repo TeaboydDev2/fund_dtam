@@ -81,18 +81,18 @@ func (bn *BannerRepository) RetriveBannerList(ctx context.Context, page, limit i
 	return
 }
 
-func (bn *BannerRepository) EditPosition(ctx context.Context, banners []*entities.EditBannerPosition) (err error) {
+func (bn *BannerRepository) EditPosition(ctx context.Context, banners []*entities.Banner) (err error) {
 
-	models := make([]mongo.WriteModel, 0, len(banners))
+	models := make([]mongo.WriteModel, len(banners))
 
-	for _, b := range banners {
+	for i, b := range banners {
 
 		filter := bson.M{"_id": b.ID}
-		update := bson.M{"$set": bson.M{"position": b.Position}}
+		update := bson.M{"$set": bson.M{"position": b.Position, "updated_at": time.Now()}}
 
-		models = append(models, mongo.NewUpdateOneModel().
+		models[i] = mongo.NewUpdateOneModel().
 			SetFilter(filter).
-			SetUpdate(update))
+			SetUpdate(update)
 	}
 
 	if _, err = bn.collection.BulkWrite(ctx, models); err != nil {

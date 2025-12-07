@@ -13,8 +13,3 @@ type Banner struct {
 	CreatedAt     time.Time  `bson:"created_at" json:"created_at"`
 	UpdatedAt     time.Time  `bson:"updated_at" json:"updated_at"`
 }
-
-type EditBannerPosition struct {
-	ID       string `bson:"_id" json:"id"`
-	Position int    `bson:"position" json:"position"`
-}

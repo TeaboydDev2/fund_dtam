@@ -113,6 +113,11 @@ func (eb *EBookService) EditEBook(ctx context.Context, id string, ebook *entitie
 		if err = eb.fileStorageRepository.Upload(ctx, thumbnailPath, thumbnail.ContentType, thumbnail.File, thumbnail.Size); err != nil {
 			return
 		}
+
+		if err = eb.fileStorageRepository.DeleteObject(ctx, oldEbook.Thumbnail.Path); err != nil {
+			return
+		}
+
 		oldEbook.Thumbnail = cloneFile(thumbnail, thumbnailPath)
 	}
 
@@ -120,6 +125,11 @@ func (eb *EBookService) EditEBook(ctx context.Context, id string, ebook *entitie
 		if err = eb.fileStorageRepository.Upload(ctx, filePath, file.ContentType, file.File, file.Size); err != nil {
 			return
 		}
+
+		if err = eb.fileStorageRepository.DeleteObject(ctx, oldEbook.EBookFile.Path); err != nil {
+			return
+		}
+
 		oldEbook.EBookFile = cloneFile(file, filePath)
 	}
 

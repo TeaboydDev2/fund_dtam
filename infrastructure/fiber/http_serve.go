@@ -57,22 +57,26 @@ func Start(
 	otherServiceRepository := repository.NewOtherServiceRepository(mongo)
 	statViewRepository := repository.NewStatViewRepository(mongo)
 	ebookRepository := repository.NewEBookRepository(mongo)
+	bannerRepository := repository.NewBannerRepository(mongo)
 
 	otherService := service.NewOtherService(otherServiceRepository, fileRepository, cfg.Minio, logger)
 	fileService := service.NewFileObjectService(fileRepository)
 	statViewService := service.NewStatViewServiceService(statViewRepository)
 	ebookService := service.NewEBookService(ebookRepository, fileRepository, cfg.Minio)
+	bannerService := service.NewBannerService(bannerRepository, fileRepository, logger, cfg.Minio)
 
 	otherServiceHandler := handler.NewOtherServiceHandler(logger, otherService, fileService)
 	fileHandler := handler.NewFileObjectHandler(fileService)
 	statViewHandler := handler.NewStatViewHandler(statViewService)
 	ebookHandler := handler.NewEBookHandler(ebookService)
+	bannerHandler := handler.NewBannerHandler(bannerService)
 
 	dtam := app.Group(fmt.Sprintf("/dtam-fund/%s", cfg.HTTP.Prefix))
 	dtam.Mount("/other-service", routes.OtherServiceRoutes(otherServiceHandler))
 	dtam.Mount("/file", routes.FileObjectRoutes(fileHandler))
 	dtam.Mount("/stat", routes.StatViewRoutes(statViewHandler))
 	dtam.Mount("/ebook", routes.EBookRoutes(ebookHandler))
+	dtam.Mount("/banner", routes.BannerRoutes(bannerHandler))
 
 	app.Get("/health-check", default_router.HealthCheck)
 	app.Use(func(c *fiber.Ctx) error {
