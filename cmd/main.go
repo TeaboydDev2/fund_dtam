@@ -8,8 +8,9 @@ import (
 	minio_obj "dtam-fund-cms-backend/infrastructure/minio"
 	mongodb "dtam-fund-cms-backend/infrastructure/mongo"
 	"log"
-	"os"
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -19,28 +20,28 @@ func main() {
 
 	dotenv, err := cfg.SetUpEnviroment()
 	if err != nil {
-		log.Println("ENV NOT FOUND !")
-		os.Exit(1)
+		log.Fatalf("Cannot Load Env.")
 	}
 
 	log.Println("ENV has been loaded")
+
+	validator := validator.New()
 
 	logger := logger.EstablishZeroLogger(*dotenv.App)
 
 	mongo, err := mongodb.EstablishConnection(ctx, dotenv.Mongo)
 	if err != nil {
-		os.Exit(1)
+		log.Fatalf("[Startup Error] Unable to connect to MongoDB: %v", err)
 	}
 	defer mongo.Close(ctx)
 
 	minio, err := minio_obj.EstablishConnection(ctx, dotenv.Minio)
 	if err != nil {
-		log.Print(err)
-		os.Exit(1)
+		log.Fatalf("[Startup Error] Unable to connect to Minio: %v", err)
 	}
 
-	err = fiber.Start(ctx, *dotenv, logger, mongo, minio)
+	err = fiber.Start(ctx, *dotenv, logger, mongo, minio, validator)
 	if err != nil {
-		os.Exit(1)
+		log.Fatalf("Start failed:%v", err)
 	}
 }
