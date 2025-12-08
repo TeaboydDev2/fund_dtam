@@ -17,6 +17,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -29,6 +30,7 @@ func Start(
 	logger *logger.ZeroLogger,
 	mongo *mongodb.MongoClient,
 	minio *minio_obj.MinioClient,
+	validate *validator.Validate,
 ) error {
 
 	app := fiber.New(fiber.Config{
